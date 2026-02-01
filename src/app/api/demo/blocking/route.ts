@@ -5,6 +5,11 @@ export async function POST() {
   const response = await generateText({
     model: anthropic("claude-haiku-4-5"),
     prompt: "Write a vegetarion lasagna recipe for 4 people",
+    experimental_telemetry: {
+      isEnabled: true,
+      recordInputs: true,
+      recordOutputs: true,
+    },
   });
 
   return Response.json({ response });
