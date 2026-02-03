@@ -31,7 +31,7 @@ export const ProjectsView = () => {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.metaKey || event.ctrlKey) {
-        if (event.key === "k") {
+        if (event.key === "k" || event.key === "j") {
           event.preventDefault();
           setOpenCommandDialog(true);
         }
@@ -98,13 +98,12 @@ export const ProjectsView = () => {
               </Button>
               <Button
                 variant="outline"
-                onClick={() => {}}
+                disabled
                 size="lg"
                 className="h-full items-start justify-start p-4 bg-background border flex flex-col gap-6 rounded-none"
               >
                 <div className="flex items-center justify-between w-full">
                   <FaGithub className="size-4" />
-                  <Kbd className="bg-accent border">⌘+I</Kbd>
                 </div>
                 <div>
                   <span className="text-sm">Import</span>
