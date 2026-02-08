@@ -13,7 +13,7 @@ import {
 } from "unique-names-generator";
 import { Button } from "@/components/ui/button";
 import { Kbd } from "@/components/ui/kbd";
-import { useCreateProject } from "@/features/hooks/use-projects";
+import { useCreateProject } from "@/features/projects/hooks/use-projects";
 import { cn } from "@/lib/utils";
 import { ProjectsCommandDialog } from "./projects-command-dialog";
 import { ProjectsList } from "./projects-list";

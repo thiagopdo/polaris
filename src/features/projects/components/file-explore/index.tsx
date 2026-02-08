@@ -1,0 +1,137 @@
+import {
+  ChevronRightIcon,
+  CopyMinusIcon,
+  FilePlusCornerIcon,
+  FolderPlusIcon,
+} from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+
+import { cn } from "@/lib/utils";
+import type { Id } from "../../../../../convex/_generated/dataModel";
+import {
+  useCreateFile,
+  useCreateFolder,
+  useFolderContents,
+} from "../../hooks/use-file";
+import { useProject } from "../../hooks/use-projects";
+import { CreateInput } from "./create-input";
+import { LoadingRow } from "./loading-row";
+import { Tree } from "./tree";
+
+export const FileExplorer = ({ projectId }: { projectId: Id<"projects"> }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [collapseKey, setCollapseKey] = useState(0);
+  const [creating, setCreating] = useState<"file" | "folder" | null>(null);
+
+  const project = useProject(projectId);
+  const rootFiles = useFolderContents({ projectId, enabled: isExpanded });
+
+  const createFile = useCreateFile();
+  const createFolder = useCreateFolder();
+
+  const handleCreate = (name: string) => {
+    setCreating(null);
+
+    if (creating === "file") {
+      createFile({
+        projectId,
+        name,
+        content: "",
+        parentId: undefined,
+      });
+    } else {
+      createFolder({
+        projectId,
+        name,
+        parentId: undefined,
+      });
+    }
+  };
+
+  return (
+    <div className="h-full bg-sidebar">
+      <ScrollArea>
+        {/** biome-ignore lint/a11y/useFocusableInteractive: <wont be necessary> */}
+        {/** biome-ignore lint/a11y/useKeyWithClickEvents: <wont be necessary> */}
+        {/** biome-ignore lint/a11y/useSemanticElements: <wont be necessary> */}
+        <div
+          className="group/project cursor-pointer w-full text-left flex items-center gap-0.5 h-5.5 bg-accent font-bold"
+          onClick={() => setIsExpanded((value) => !value)}
+          role="button"
+        >
+          <ChevronRightIcon
+            className={cn(
+              "size-4 shrink-0 text-muted-foreground",
+              isExpanded && "rotate-90",
+            )}
+          />
+          <p className="text-xs uppercase line-clamp-1">
+            {project?.name ?? "Loading..."}
+          </p>
+          <div className="opacity-0 group-hover/project:opacity-100 transition-none duration-0 flex items-center gap-0.5 ml-auto">
+            <Button
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                setIsExpanded(true);
+                setCreating("file");
+              }}
+              variant="highlight"
+              size="icon-xs-highlight"
+            >
+              <FilePlusCornerIcon className="size-3.5" />
+            </Button>
+            <Button
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                setIsExpanded(true);
+                setCreating("folder");
+              }}
+              variant="highlight"
+              size="icon-xs-highlight"
+            >
+              <FolderPlusIcon className="size-3.5" />
+            </Button>
+            <Button
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                //reset collapse
+                setCollapseKey((value) => value + 1);
+              }}
+              variant="highlight"
+              size="icon-xs-highlight"
+            >
+              <CopyMinusIcon className="size-3.5" />
+            </Button>
+          </div>
+        </div>
+        {isExpanded && (
+          <>
+            {rootFiles === undefined && <LoadingRow level={0} />}
+            {creating && (
+              <CreateInput
+                type={creating}
+                level={0}
+                onSubmit={handleCreate}
+                onCancel={() => setCreating(null)}
+              />
+            )}
+
+            {rootFiles?.map((item) => (
+              <Tree
+                key={`${item._id}-${collapseKey}`}
+                item={item}
+                level={0}
+                projectId={projectId}
+              />
+            ))}
+          </>
+        )}
+      </ScrollArea>
+    </div>
+  );
+};
