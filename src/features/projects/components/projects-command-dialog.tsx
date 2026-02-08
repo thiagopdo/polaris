@@ -11,8 +11,8 @@ import {
   CommandList,
 } from "@/components/ui/command";
 
-import { useProjects } from "@/features/hooks/use-projects";
 import type { Doc } from "../../../../convex/_generated/dataModel";
+import { useProjects } from "../hooks/use-projects";
 
 interface ProjectsCommandDialogProps {
   open: boolean;

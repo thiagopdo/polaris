@@ -10,8 +10,8 @@ import { FaGithub } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { Kbd } from "@/components/ui/kbd";
 import { Spinner } from "@/components/ui/spinner";
-import { useProjectsPartial } from "@/features/hooks/use-projects";
 import type { Doc } from "../../../../convex/_generated/dataModel";
+import { useProjectsPartial } from "../hooks/use-projects";
 
 const formatTimestamp = (timestamp: number) => {
   return formatDistanceToNow(new Date(timestamp), {
