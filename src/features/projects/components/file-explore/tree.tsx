@@ -1,6 +1,7 @@
 import { FileIcon, FolderIcon } from "@react-symbols/icons/utils";
 import { ChevronRightIcon } from "lucide-react";
 import { useState } from "react";
+import { useEditor } from "@/features/editor/hooks/use-editor";
 import { cn } from "@/lib/utils";
 import type { Doc, Id } from "../../../../../convex/_generated/dataModel";
 import {
@@ -33,6 +34,8 @@ export const Tree = ({
   const renameFile = useRenameFile();
   const deleteFile = useDeleteFile();
   const createFolder = useCreateFolder();
+
+  const { openFile, closeTab, activeTabId } = useEditor(projectId);
 
   const folderContents = useFolderContents({
     projectId,
@@ -74,6 +77,7 @@ export const Tree = ({
 
   if (item.type === "file") {
     const fileName = item.name;
+    const isActive = activeTabId === item._id;
 
     if (isRenaming) {
       return (
@@ -91,11 +95,14 @@ export const Tree = ({
       <TreeItemWrapper
         item={item}
         level={level}
-        isActive={false}
-        onClick={() => {}}
-        onDoubleClick={() => {}}
+        isActive={isActive}
+        onClick={() => openFile(item._id, { pinned: false })}
+        onDoubleClick={() => openFile(item._id, { pinned: true })}
         onRename={() => setIsRenaming(true)}
-        onDelete={() => deleteFile({ id: item._id })}
+        onDelete={() => {
+          closeTab(item._id);
+          deleteFile({ id: item._id });
+        }}
       >
         <FileIcon fileName={fileName} autoAssign className="size-4" />
         <span className="truncate text-sm">{fileName}</span>
