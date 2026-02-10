@@ -20,7 +20,7 @@ export const FileBreadcrumbs = ({
   const { activeTabId } = useEditor(projectId);
   const filePath = useFilePath(activeTabId);
 
-  if (!filePath === undefined || !activeTabId) {
+  if (filePath === undefined || !activeTabId) {
     return (
       <div className="p-2 bg-background pl-4 border-b">
         <Breadcrumb>

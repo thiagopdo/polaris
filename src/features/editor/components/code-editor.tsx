@@ -22,6 +22,9 @@ export const CodeEditor = ({
   const editorRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
 
+  const onChangeRef = useRef(onChange);
+  onChangeRef.current = onChange;
+
   const languageExtension = useMemo(() => {
     return getLanguageExtension(fileName);
   }, [fileName]);
@@ -43,7 +46,7 @@ export const CodeEditor = ({
         indentationMarkers(),
         EditorView.updateListener.of((update) => {
           if (update.docChanged) {
-            onChange(update.state.doc.toString());
+            onChangeRef.current(update.state.doc.toString());
           }
         }),
       ],
@@ -51,7 +54,7 @@ export const CodeEditor = ({
 
     viewRef.current = view;
     return () => view.destroy();
-  }, [languageExtension, onChange]);
+  }, [languageExtension]);
 
   return <div className="size-full pl-4 bg-background" ref={editorRef} />;
 };
