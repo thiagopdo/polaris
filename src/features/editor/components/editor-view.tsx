@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useFile, useUpdateFile } from "@/features/projects/hooks/use-file";
 import type { Id } from "../../../../convex/_generated/dataModel";
 import { useEditor } from "../hooks/use-editor";
@@ -15,8 +15,17 @@ export const EditorView = ({ projectId }: { projectId: Id<"projects"> }) => {
   const updateFile = useUpdateFile();
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const isActiveFileBinary = activeFile && activeFile.storageId;
+  const isActiveFileBinary = activeFile?.storageId;
   const isActiveFileText = activeFile && !activeFile.storageId;
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <activetabid>
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [activeTabId]);
 
   return (
     <div className="h-full flex flex-col">
