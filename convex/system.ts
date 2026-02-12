@@ -19,6 +19,7 @@ export const getConversationById = query({
     internalKey: v.string(),
   },
   handler: async (ctx, args) => {
+    validateInternalKey(args.internalKey);
     return await ctx.db.get(args.conversationId);
   },
 });
