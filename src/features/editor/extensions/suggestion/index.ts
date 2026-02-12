@@ -68,7 +68,7 @@ const generatePayload = (view: EditorView, fileName: string) => {
   const nextLines: string[] = [];
   const totalLines = view.state.doc.lines;
   const linesToFetch = Math.min(5, totalLines - currentLine.number);
-  for (let i = 1; 9 <= linesToFetch; i++) {
+  for (let i = 1; i <= linesToFetch; i++) {
     nextLines.push(view.state.doc.line(currentLine.number + i).text);
   }
 
