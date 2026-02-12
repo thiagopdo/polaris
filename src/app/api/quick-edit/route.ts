@@ -2,7 +2,6 @@ import { anthropic } from "@ai-sdk/anthropic";
 import { auth } from "@clerk/nextjs/server";
 import { generateText, Output } from "ai";
 import { NextResponse } from "next/server";
-import { format } from "path";
 import { z } from "zod";
 import { firecrawl } from "@/lib/firecrawl";
 
