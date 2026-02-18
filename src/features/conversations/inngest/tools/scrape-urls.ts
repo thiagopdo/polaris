@@ -12,11 +12,7 @@ export const createScrapeUrlsTool = () => {
     description:
       "Scrape content from URLs to get documentation or reference material. Use this when the user provides URLs or references external documentation. Returns markdown content from the scraped pages.",
     parameters: z.object({
-      urls: z.object({
-        urls: z
-          .array(z.string())
-          .describe("Array of URLs to scrape for content"),
-      }),
+      urls: z.array(z.string()).describe("Array of URLs to scrape for content"),
     }),
 
     handler: async (params, { step: toolStep }) => {

@@ -40,7 +40,7 @@ export const createUpdateFileTool = ({
       });
 
       if (!existingFile) {
-        `Error: file with ID ${fileId} not found. use listFiles tool to get the list of available files and their IDs.`;
+        return `Error: file with ID ${fileId} not found. use listFiles tool to get the list of available files and their IDs.`;
       }
 
       if (existingFile?.type === "folder") {
