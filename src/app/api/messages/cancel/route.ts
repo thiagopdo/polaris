@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { success, z } from "zod";
+import { z } from "zod";
 import { inngest } from "@/inngest/client";
 import { convex } from "@/lib/convex-client";
 import { api } from "../../../../../convex/_generated/api";
