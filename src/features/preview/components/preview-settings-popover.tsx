@@ -71,7 +71,7 @@ export const PreviewSettingsPopover = ({
         <Button
           size="sm"
           variant="ghost"
-          className="h-full rounded-nove"
+          className="h-full rounded-none"
           title="Preview settings"
         >
           <SettingsIcon className="size-3" />

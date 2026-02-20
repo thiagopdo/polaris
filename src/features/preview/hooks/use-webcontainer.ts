@@ -1,31 +1,29 @@
 import { WebContainer } from "@webcontainer/api";
-
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useFiles } from "@/features/projects/hooks/use-file";
-
 import type { Id } from "../../../../convex/_generated/dataModel";
 import { buildFileTree, getFilePath } from "../utils/file-tree";
 
-let webcontainerInstante: WebContainer | null = null;
+let webcontainerInstance: WebContainer | null = null;
 let bootPromise: Promise<WebContainer> | null = null;
 
 const getWebContainer = async (): Promise<WebContainer> => {
-  if (webcontainerInstante) {
-    return webcontainerInstante;
+  if (webcontainerInstance) {
+    return webcontainerInstance;
   }
 
   if (!bootPromise) {
     bootPromise = WebContainer.boot({ coep: "credentialless" });
   }
 
-  webcontainerInstante = await bootPromise;
-  return webcontainerInstante;
+  webcontainerInstance = await bootPromise;
+  return webcontainerInstance;
 };
 
 const teardownWebContainer = () => {
-  if (webcontainerInstante) {
-    webcontainerInstante.teardown();
-    webcontainerInstante = null;
+  if (webcontainerInstance) {
+    webcontainerInstance.teardown();
+    webcontainerInstance = null;
   }
 
   bootPromise = null;
@@ -66,6 +64,7 @@ export const useWebContainer = ({
     }
 
     hasStartedRef.current = true;
+    let cancelled = false;
 
     const start = async () => {
       try {
@@ -78,6 +77,7 @@ export const useWebContainer = ({
         };
 
         const container = await getWebContainer();
+        if (cancelled) return;
         containerRef.current = container;
 
         const fileTree = buildFileTree(files);
@@ -104,6 +104,7 @@ export const useWebContainer = ({
         );
 
         const installExitCode = await installProcess.exit;
+        if (cancelled) return;
         if (installExitCode !== 0) {
           throw new Error(`${installCmd} failed with code ${installExitCode}`);
         }
@@ -121,19 +122,17 @@ export const useWebContainer = ({
           }),
         );
       } catch (error) {
+        if (cancelled) return;
         setError(error instanceof Error ? error.message : "Unknown error");
         setStatus("error");
       }
     };
 
     start();
-  }, [
-    enabled,
-    files,
-    restartKey,
-    settings?.installCommand,
-    settings?.devCommand,
-  ]);
+    return () => {
+      cancelled = true;
+    };
+  }, [enabled, files, settings?.installCommand, settings?.devCommand]);
 
   //sync file changes (hot-relaod)
   useEffect(() => {
@@ -142,12 +141,17 @@ export const useWebContainer = ({
 
     const filesMap = new Map(files.map((f) => [f._id, f]));
 
-    for (const file of files) {
-      if (file.type !== "file" || file.storageId || !file.content) continue;
+    const syncFiles = async () => {
+      for (const file of files) {
+        if (file.type !== "file" || file.storageId || !file.content) continue;
 
-      const filePath = getFilePath(file, filesMap);
-      container.fs.writeFile(filePath, file.content);
-    }
+        const filePath = getFilePath(file, filesMap);
+        //container.fs.writeFile(filePath, file.content);
+        await container.fs.writeFile(filePath, file.content);
+      }
+    };
+
+    syncFiles().catch(console.error);
   }, [files, status]);
 
   // Reset when disabled
