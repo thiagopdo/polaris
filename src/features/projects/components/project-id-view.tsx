@@ -7,6 +7,7 @@ import { EditorView } from "@/features/editor/components/editor-view";
 import { cn } from "@/lib/utils";
 import type { Id } from "../../../../convex/_generated/dataModel";
 import { FileExplorer } from "./file-explore";
+import { PreviewView } from "./preview-view";
 
 const MIN_SIDEBAR_WIDTH = 200;
 const MAX_SIDEBAR_WIDTH = 800;
@@ -38,18 +39,18 @@ const Tab = ({
 };
 
 export const ProjectIdView = ({ projectId }: { projectId: Id<"projects"> }) => {
-  const [acitveView, setActiveView] = useState<"editor" | "preview">("editor");
+  const [activeView, setActiveView] = useState<"editor" | "preview">("editor");
   return (
     <div className="h-full flex flex-col">
       <nav className="h-8.75 flex items-center bg-sidebar border-b">
         <Tab
           label="Code"
-          isActive={acitveView === "editor"}
+          isActive={activeView === "editor"}
           onClick={() => setActiveView("editor")}
         />
         <Tab
           label="Preview"
-          isActive={acitveView === "preview"}
+          isActive={activeView === "preview"}
           onClick={() => setActiveView("preview")}
         />
         <div className="flex-1 flex justify-end h-full">
@@ -63,7 +64,7 @@ export const ProjectIdView = ({ projectId }: { projectId: Id<"projects"> }) => {
         <div
           className={cn(
             "absolute inset-0",
-            acitveView === "editor" ? "visible" : "invisible",
+            activeView === "editor" ? "visible" : "invisible",
           )}
         >
           <Allotment defaultSizes={[DEFAULT_SIDEBAR_WIDTH, DEFAULT_MAIN_SIZE]}>
@@ -83,10 +84,10 @@ export const ProjectIdView = ({ projectId }: { projectId: Id<"projects"> }) => {
         <div
           className={cn(
             "absolute inset-0",
-            acitveView === "preview" ? "visible" : "invisible",
+            activeView === "preview" ? "visible" : "invisible",
           )}
         >
-          <div>Preview</div>
+          <PreviewView projectId={projectId} />
         </div>
       </div>
     </div>
