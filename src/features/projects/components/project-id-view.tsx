@@ -2,10 +2,11 @@
 
 import { Allotment } from "allotment";
 import { useState } from "react";
-import { FaGithub } from "react-icons/fa";
+
 import { EditorView } from "@/features/editor/components/editor-view";
 import { cn } from "@/lib/utils";
 import type { Id } from "../../../../convex/_generated/dataModel";
+import { ExportPopover } from "./export-popover";
 import { FileExplorer } from "./file-explore";
 import { PreviewView } from "./preview-view";
 
@@ -54,10 +55,7 @@ export const ProjectIdView = ({ projectId }: { projectId: Id<"projects"> }) => {
           onClick={() => setActiveView("preview")}
         />
         <div className="flex-1 flex justify-end h-full">
-          <div className="flex items-center gap-1.5 h-full px-3 cursor-pointer text-muted-foreground border-l hover:bg-accent/30">
-            <FaGithub className="size-3.5" />
-            <span className="text-sm font-medium">Export</span>
-          </div>
+          <ExportPopover projectId={projectId} />
         </div>
       </nav>
       <div className="flex-1 relative">
