@@ -51,8 +51,8 @@ export const ExportPopover = ({ projectId }: ExportPopoverProps) => {
   const [open, setOpen] = React.useState(false);
   const { openUserProfile } = useClerk();
 
-  const exportStatus = project?.exportRepoUrl;
-  const exportRepoUrl = project?.exportRepoUrl;
+  const exportRepoUrl = project?.exportStatus;
+  const exportStatus = project?.exportReportUrl;
 
   const form = useForm({
     defaultValues: {
