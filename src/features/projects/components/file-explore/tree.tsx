@@ -31,8 +31,8 @@ export const Tree = ({
   const [isCreating, setIsCreating] = useState<"file" | "folder" | null>(null);
 
   const createFile = useCreateFile();
-  const renameFile = useRenameFile();
-  const deleteFile = useDeleteFile();
+  const renameFile = useRenameFile({ projectId, parentId: item.parentId });
+  const deleteFile = useDeleteFile({ projectId, parentId: item.parentId });
   const createFolder = useCreateFolder();
 
   const { openFile, closeTab, activeTabId } = useEditor(projectId);

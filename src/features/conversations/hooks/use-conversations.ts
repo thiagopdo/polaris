@@ -18,5 +18,33 @@ export const useConversations = (projectId: Id<"projects">) => {
 };
 
 export const useCreateConversation = () => {
-  return useMutation(api.conversations.create);
+  return useMutation(api.conversations.create).withOptimisticUpdate(
+    (localStore, args) => {
+      const existingConversations = localStore.getQuery(
+        api.conversations.getByProjectId,
+        {
+          projectId: args.projectId,
+        },
+      );
+      if (existingConversations !== undefined) {
+        const now = Date.now();
+        const newConversation = {
+          _id: crypto.randomUUID() as Id<"conversations">,
+          _creationTime: now,
+          projectId: args.projectId,
+          title: args.title,
+          createdAt: now,
+          updatedAt: now,
+        };
+
+        localStore.setQuery(
+          api.conversations.getByProjectId,
+          {
+            projectId: args.projectId,
+          },
+          [newConversation, ...existingConversations],
+        );
+      }
+    },
+  );
 };
