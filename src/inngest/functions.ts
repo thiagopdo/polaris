@@ -32,7 +32,7 @@ export const demoGenerate = inngest.createFunction(
 
     await step.run("generate-text", async () => {
       return await generateText({
-        model: anthropic("claude-haiku-4-5"),
+        model: anthropic("claude-3-haiku-20240307"),
         prompt: finalPrompt,
         experimental_telemetry: {
           isEnabled: true,

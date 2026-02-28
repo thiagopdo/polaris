@@ -114,7 +114,7 @@ export const processMessage = inngest.createFunction(
         name: "title-generator",
         system: TITLE_GENERATOR_SYSTEM_PROMPT,
         model: anthropic({
-          model: "claude-haiku-4-5",
+          model: "claude-3-haiku-20240307",
           defaultParameters: { temperature: 0, max_tokens: 50 },
         }),
       });
@@ -153,7 +153,7 @@ export const processMessage = inngest.createFunction(
         "An expert AI coding assistant with file manipulation capabilities",
       system: systemPrompt,
       model: anthropic({
-        model: "claude-opus-4-0",
+        model: "claude-3-haiku-20240307",
         defaultParameters: { temperature: 0.2, max_tokens: 3000 },
       }),
       tools: [
